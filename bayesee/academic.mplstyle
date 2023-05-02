@@ -1,0 +1,24 @@
+figure.figsize: 12, 9
+font.size: 24
+axes.labelsize: 24
+xtick.labelsize: 16
+ytick.labelsize: 16
+axes.linewidth: 4
+xtick.major.width: 3
+ytick.major.width: 3
+xtick.minor.width: 3
+ytick.minor.width: 3
+xtick.major.size: 24
+ytick.major.size: 24
+xtick.minor.size: 16
+ytick.minor.size: 16
+xtick.major.pad: 2
+ytick.major.pad: 2
+xtick.minor.pad: 2
+ytick.minor.pad: 2
+axes.labelcolor: black
+xtick.color: black
+ytick.color: black
+scatter.marker: o
+image.cmap : gray
+axes.prop_cycle: cycler(color=["#EE3377", "#0077BB", "#33BBEE", "#EE7733", "#009988", "#CC3311", "#BBBBBB"])
