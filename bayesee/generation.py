@@ -1,5 +1,5 @@
 import numpy as np
-from bayesee.interaction import *
+from bayesee.perception import *
 from numpy.fft import fftn, fftshift, ifftshift, ifftn
 
 # %% Deterministic
