@@ -4,11 +4,26 @@ import numpy as np
 import pandas as pd
 
 
+def test_compute_confusion_matrix_w_discrete_response_typical_cases():
+    stimulus = {
+        "df": pd.DataFrame({"amplitude": np.ones((4,)), "presence": np.ones((4,))})
+    }
+    response = {"df": pd.DataFrame({"response_presence": np.zeros((4,))})}
+    stimulus["df"]["presence"][0:2] = 0
+
+    array_Bb, array_Aa = compute_confusion_matrix_w_discrete_response(
+        stimulus, response
+    )
+
+    assert np.allclose(array_Aa, 1)
+    assert np.allclose(array_Bb, 0)
+
+
 def test_compute_dprime_criterion_w_discrete_response_typical_cases():
     stimulus = {
         "df": pd.DataFrame({"amplitude": np.ones((4,)), "presence": np.ones((4,))})
     }
-    response = {"df": pd.DataFrame({"presence": np.zeros((4,))})}
+    response = {"df": pd.DataFrame({"response_presence": np.zeros((4,))})}
     stimulus["df"]["presence"][0:2] = 0
 
     array_dprime, array_criterion = compute_dprime_criterion_w_discrete_response(
@@ -24,8 +39,8 @@ def test_compute_PC_max_criterion_w_continuous_response_typical_cases():
     }
     stimulus["df"]["presence"][0:2] = 0
 
-    response = {"df": pd.DataFrame({"presence": np.zeros((4,))})}
-    response["df"]["presence"][1:3] = 1
+    response = {"df": pd.DataFrame({"response_presence": np.zeros((4,))})}
+    response["df"]["response_presence"][1:3] = 1
 
     array_PC_max, array_criterion = compute_PC_max_criterion_w_continuous_response(
         stimulus, response
@@ -53,7 +68,7 @@ def test_negative_loglikelihood_w_parameter_edge_cases():
     stimulus = {
         "df": pd.DataFrame({"amplitude": np.ones((3,)), "presence": np.ones((3,))})
     }
-    response = {"df": pd.DataFrame({"presence": np.ones((3,))})}
+    response = {"df": pd.DataFrame({"response_presence": np.ones((3,))})}
     output = negative_loglikelihood_w_parameter(
         x, stimulus, response, unit_likelihood_abc
     )
@@ -63,7 +78,7 @@ def test_negative_loglikelihood_w_parameter_edge_cases():
 def test_unit_likelihood_ab_edge_cases():
     x = [1, 0]
     stimulus = {"df": pd.DataFrame({"amplitude": [1], "presence": [1]})}
-    response = {"df": pd.DataFrame({"presence": [1]})}
+    response = {"df": pd.DataFrame({"response_presence": [1]})}
     assert unit_likelihood_ab(
         x, stimulus["df"].loc[0], response["df"].loc[0]
     ) == norm.cdf(0.5)
@@ -77,7 +92,7 @@ def test_unit_likelihood_ab_edge_cases():
 def test_unit_likelihood_abc_edge_cases():
     x = [1, 0, 0]
     stimulus = {"df": pd.DataFrame({"amplitude": [1], "presence": [1]})}
-    response = {"df": pd.DataFrame({"presence": [1]})}
+    response = {"df": pd.DataFrame({"response_presence": [1]})}
 
     assert unit_likelihood_abc(
         x, stimulus["df"].loc[0], response["df"].loc[0]
@@ -91,7 +106,7 @@ def test_unit_likelihood_abc_edge_cases():
 
 def test_unit_likelihood_gaussian_edge_cases():
     stimulus = {"df": pd.DataFrame({"amplitude": [0], "location": [1]})}
-    response = {"df": pd.DataFrame({"location": [1]})}
+    response = {"df": pd.DataFrame({"response_location": [1]})}
 
     x = [1, 0]
 
@@ -99,7 +114,7 @@ def test_unit_likelihood_gaussian_edge_cases():
         unit_likelihood_gaussian(x, stimulus["df"].loc[0], response["df"].loc[0]), 0.5
     )
 
-    response = {"df": pd.DataFrame({"location": [2]})}
+    response = {"df": pd.DataFrame({"response_location": [2]})}
     assert np.allclose(
         unit_likelihood_gaussian(x, stimulus["df"].loc[0], response["df"].loc[0]), 0.5
     )
@@ -110,12 +125,12 @@ def test_unit_likelihood_gaussian_edge_cases():
     )
 
     stimulus1 = {"df": pd.DataFrame({"amplitude": [1], "location": [1]})}
-    response1 = {"df": pd.DataFrame({"location": [1]})}
+    response1 = {"df": pd.DataFrame({"response_location": [1]})}
 
     x1 = [5, 0.5]
 
     stimulus2 = {"df": pd.DataFrame({"amplitude": [1], "location": [2]})}
-    response2 = {"df": pd.DataFrame({"location": [2]})}
+    response2 = {"df": pd.DataFrame({"response_location": [2]})}
 
     x2 = [5, -0.5]
 
@@ -127,7 +142,7 @@ def test_unit_likelihood_gaussian_edge_cases():
 
 def test_unit_likelihood_uniform_edge_cases():
     stimulus = {"df": pd.DataFrame({"amplitude": [1], "location": [1]})}
-    response = {"df": pd.DataFrame({"location": [1]})}
+    response = {"df": pd.DataFrame({"response_location": [1]})}
 
     x = [1, 0]
     assert np.allclose(
@@ -139,7 +154,7 @@ def test_unit_likelihood_uniform_edge_cases():
         unit_likelihood_uniform(x, stimulus["df"].loc[0], response["df"].loc[0]), 0.5
     )
 
-    response = {"df": pd.DataFrame({"location": [2]})}
+    response = {"df": pd.DataFrame({"response_location": [2]})}
 
     x = [1, 0]
     assert np.allclose(
@@ -147,12 +162,12 @@ def test_unit_likelihood_uniform_edge_cases():
     )
 
     stimulus1 = {"df": pd.DataFrame({"amplitude": [1], "location": [1]})}
-    response1 = {"df": pd.DataFrame({"location": [1]})}
+    response1 = {"df": pd.DataFrame({"response_location": [1]})}
 
     x1 = [5, 0.5]
 
     stimulus2 = {"df": pd.DataFrame({"amplitude": [1], "location": [2]})}
-    response2 = {"df": pd.DataFrame({"location": [2]})}
+    response2 = {"df": pd.DataFrame({"response_location": [2]})}
 
     x2 = [5, -0.5]
 

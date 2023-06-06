@@ -20,6 +20,7 @@ ytick.minor.pad: 2
 axes.labelcolor: black
 xtick.color: black
 ytick.color: black
+lines.linewidth: 5.0
 scatter.marker: o
 image.cmap : gray
 axes.prop_cycle: cycler(color=["#BD5500", "#0077BB", "#33BBEE", "#EE3377", "#009988", "#CC3311", "#BBBBBB"])

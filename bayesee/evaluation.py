@@ -11,10 +11,32 @@ def compute_dprime_w_PC_max(array_PC_max):
     return 2 * norm.ppf(array_PC_max)
 
 
+def compute_confusion_matrix_w_discrete_response(stimulus, response):
+    amplitude = stimulus["df"]["amplitude"]
+    presence = stimulus["df"]["presence"]
+    response_presence = response["df"]["response_presence"]
+
+    array_unique_amplitude = np.unique(amplitude)
+    array_Bb = np.zeros_like(amplitude)
+    array_Aa = np.zeros_like(amplitude)
+
+    for unique_amplitude in array_unique_amplitude:
+        index_unique = amplitude == unique_amplitude
+        nBb = sum((presence == 1) & (response_presence == 1) & index_unique)
+        nb = sum((presence == 1) & (index_unique))
+        nBa = sum((presence == 0) & (response_presence == 1) & index_unique)
+        na = sum((presence == 0) & (index_unique))
+
+        array_Bb[index_unique] = nBb / nb
+        array_Aa[index_unique] = 1 - nBa / na
+
+    return array_Bb, array_Aa
+
+
 def compute_dprime_criterion_w_discrete_response(stimulus, response):
     amplitude = stimulus["df"]["amplitude"]
     presence = stimulus["df"]["presence"]
-    response_presence = response["df"]["presence"]
+    response_presence = response["df"]["response_presence"]
 
     array_unique_amplitude = np.unique(amplitude)
     array_dprime = np.zeros_like(amplitude)
@@ -50,7 +72,7 @@ def compute_dprime_criterion_w_discrete_response(stimulus, response):
 def compute_PC_max_criterion_w_continuous_response(stimulus, response):
     amplitude = stimulus["df"]["amplitude"]
     presence = stimulus["df"]["presence"]
-    decision_variable = response["df"]["presence"]
+    decision_variable = response["df"]["response_presence"]
 
     array_unique_amplitude = np.unique(amplitude)
     array_PC_max = np.zeros_like(amplitude)
@@ -119,7 +141,7 @@ def negative_loglikelihood_w_parameter(x, stimulus, response, unit_likelihood):
 def unit_likelihood_ab(x, stimulus_df, response_df, **kwargs):
     amplitude = stimulus_df["amplitude"]
     presence = stimulus_df["presence"]
-    response_presence = response_df["presence"]
+    response_presence = response_df["response_presence"]
 
     pBb = norm.cdf(0.5 * (amplitude / x[0]) ** x[1])
     pBa = norm.cdf(-0.5 * (amplitude / x[0]) ** x[1])
@@ -139,7 +161,7 @@ def unit_likelihood_ab(x, stimulus_df, response_df, **kwargs):
 def unit_likelihood_abc(x, stimulus_df, response_df, **kwargs):
     amplitude = stimulus_df["amplitude"]
     presence = stimulus_df["presence"]
-    response_presence = response_df["presence"]
+    response_presence = response_df["response_presence"]
 
     pBb = norm.cdf(0.5 * (amplitude / x[0]) ** x[1] - x[2])
     pBa = norm.cdf(-0.5 * (amplitude / x[0]) ** x[1] - x[2])
@@ -159,7 +181,7 @@ def unit_likelihood_abc(x, stimulus_df, response_df, **kwargs):
 def unit_likelihood_gaussian(x, stimulus_df, response_df, **kwargs):
     amplitude = stimulus_df["amplitude"]
     location = stimulus_df["location"]
-    response_location = response_df["location"]
+    response_location = response_df["response_location"]
 
     if location == 1:
         if response_location == 1:
@@ -176,7 +198,7 @@ def unit_likelihood_gaussian(x, stimulus_df, response_df, **kwargs):
 def unit_likelihood_uniform(x, stimulus_df, response_df, **kwargs):
     amplitude = stimulus_df["amplitude"]
     location = stimulus_df["location"]
-    response_location = response_df["location"]
+    response_location = response_df["response_location"]
 
     if x[0] < amplitude and abs(x[1]) <= amplitude - x[0]:
         if location == response_location:
