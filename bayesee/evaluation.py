@@ -12,7 +12,7 @@ def compute_dprime_w_PC_max(array_PC_max):
 
 
 def compute_confusion_matrix_w_discrete_response(stimulus, response):
-    amplitude = stimulus["df"]["amplitude"]
+    amplitude = stimulus["df"]["amplitude"].astype(float)
     presence = stimulus["df"]["presence"]
     response_presence = response["df"]["response_presence"]
 
@@ -34,7 +34,7 @@ def compute_confusion_matrix_w_discrete_response(stimulus, response):
 
 
 def compute_dprime_criterion_w_discrete_response(stimulus, response):
-    amplitude = stimulus["df"]["amplitude"]
+    amplitude = stimulus["df"]["amplitude"].astype(float)
     presence = stimulus["df"]["presence"]
     response_presence = response["df"]["response_presence"]
 
@@ -70,7 +70,7 @@ def compute_dprime_criterion_w_discrete_response(stimulus, response):
 
 
 def compute_PC_max_criterion_w_continuous_response(stimulus, response):
-    amplitude = stimulus["df"]["amplitude"]
+    amplitude = stimulus["df"]["amplitude"].astype(float)
     presence = stimulus["df"]["presence"]
     decision_variable = response["df"]["response_presence"]
 
