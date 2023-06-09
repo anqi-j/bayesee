@@ -49,6 +49,9 @@ def compute_dprime_criterion_w_discrete_response(stimulus, response):
         nBa = sum((presence == 0) & (response_presence == 1) & index_unique)
         na = sum((presence == 0) & (index_unique))
 
+        if na == 0 or nb == 0:
+            continue
+
         if nBb == nb:
             pBb = 1 - 1 / (nb * 2)  # assume if double # trials, make 1 error
         elif nBb == 0:
@@ -143,19 +146,12 @@ def unit_likelihood_ab(x, stimulus_df, response_df, **kwargs):
     presence = stimulus_df["presence"]
     response_presence = response_df["response_presence"]
 
-    pBb = norm.cdf(0.5 * (amplitude / x[0]) ** x[1])
-    pBa = norm.cdf(-0.5 * (amplitude / x[0]) ** x[1])
+    pC = norm.cdf(0.5 * (amplitude / x[0]) ** x[1])
 
-    if presence == 0:
-        if response_presence == 0:
-            return 1 - pBa
-        else:
-            return pBa
+    if presence == response_presence:
+        return pC
     else:
-        if response_presence == 0:
-            return 1 - pBb
-        else:
-            return pBb
+        return 1 - pC
 
 
 def unit_likelihood_abc(x, stimulus_df, response_df, **kwargs):
@@ -200,7 +196,7 @@ def unit_likelihood_uniform(x, stimulus_df, response_df, **kwargs):
     location = stimulus_df["location"]
     response_location = response_df["response_location"]
 
-    if x[0] < amplitude and abs(x[1]) <= amplitude - x[0]:
+    if abs((x[1] - amplitude) / x[0]) > 1 or abs((x[1] + amplitude) / x[0]) > 1:
         if location == response_location:
             return 1
         else:
