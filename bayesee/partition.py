@@ -43,10 +43,10 @@ def recursive_bin(df, bin_columns, n_bins, level_counter=1):
 
     df_binned[next_bin_name] = None
     for index_bin in unique_bins:
-        array_index_bin = df_binned[current_bin_name] == index_bin
+        bool_array_bin = df_binned[current_bin_name] == index_bin
 
-        df_binned.loc[array_index_bin, next_bin_name] = pd.qcut(
-            df.loc[array_index_bin, next_features[0]],
+        df_binned.loc[bool_array_bin, next_bin_name] = pd.qcut(
+            df.loc[bool_array_bin, next_features[0]],
             next_n_bins[0],
             labels=range(bin_counter, bin_counter + next_n_bins[0]),
         )

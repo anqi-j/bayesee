@@ -89,8 +89,6 @@ def compute_PC_max_criterion_w_continuous_response(stimulus, response):
         ma, mb = dva.mean(), dvb.mean()
         va, vb = na * dva.var() / (na - 1), nb * dvb.var() / (nb - 1)
 
-        print(ma, mb, va, vb)
-
         if np.allclose(va, vb) or np.allclose(ma, mb):
             criterion = (vb * ma + va * mb) / (va + vb)
             PC_max = 0.5
