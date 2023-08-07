@@ -22,29 +22,23 @@ def euclidean_distance_exponential(size, center, exponent):
 
 def sine_wave(size, frequencies, mean=0, std=1):
     # frequencies: (vertical, horizontal) cycles/image
-    fft_sine_wave = np.zeros(size, dtype=complex)
-
-    center = np.array(size) // 2
-
-    fft_sine_wave[*(center + frequencies)] = -1j
-    fft_sine_wave[*(center - frequencies)] = 1j
-
-    sine_wave = np.real(ifftn(ifftshift(fft_sine_wave)))
-
+    row, col = size
+    ii, jj = np.meshgrid(range(row), range(col), sparse=True, indexing="ij")
+    sine_wave = -np.sin(
+        2 * np.pi / row * (ii - row / 2) * frequencies[0]
+        + 2 * np.pi / col * (jj - col / 2) * frequencies[1]
+    )
     return normalize_mean_std(sine_wave, mean, std)
 
 
 def cosine_wave(size, frequencies, mean=0, std=1):
     # frequencies: (vertical, horizontal) cycles/image
-    fft_cosine_wave = np.zeros(size, dtype=complex)
-
-    center = np.array(size) // 2
-
-    fft_cosine_wave[*(center + frequencies)] = 1
-    fft_cosine_wave[*(center - frequencies)] = 1
-
-    cosine_wave = np.real(ifftn(ifftshift(fft_cosine_wave)))
-
+    row, col = size
+    ii, jj = np.meshgrid(range(row), range(col), sparse=True, indexing="ij")
+    cosine_wave = np.cos(
+        2 * np.pi / row * (ii - row / 2) * frequencies[0]
+        + 2 * np.pi / col * (jj - col / 2) * frequencies[1]
+    )
     return normalize_mean_std(cosine_wave, mean, std)
 
 
@@ -107,7 +101,7 @@ def circle(size, center, radii):
 
 def hann(size, center, width):
     euclidean_distance = euclidean_distance_exponential(size, center, 1)
-    hann_function = np.cos(np.pi * euclidean_distance / (2 * width)) ** 2
+    hann_function = np.cos(np.pi * euclidean_distance / width) ** 2
     return hann_function * circle(size, center, width / 2)
 
 
